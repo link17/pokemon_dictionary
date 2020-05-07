@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.kakao.mobility.pokemondictionary.ui.detail.DetailViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.pokemonDetailData.engName}"
+            app:layout_constraintBottom_toBottomOf="@id/buttonMap"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/buttonMap"
+            tools:text="피카츄" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iamgeViewThumbnail"
+            android:layout_width="@android:dimen/thumbnail_height"
+            android:layout_height="@android:dimen/thumbnail_width"
+            android:layout_marginTop="16dp"
+            app:imageUrl="@{viewModel.pokemonDetailData.imageUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewName" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="@{viewModel.pokemonDetailData.locationData != null}"
+            android:text="@string/button_map"
+            android:onClick="@{(view) -> viewModel.onClickMap()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@{String.valueOf(viewModel.pokemonDetailData.height)}"
+            app:layout_constraintTop_toBottomOf="@id/iamgeViewThumbnail" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
