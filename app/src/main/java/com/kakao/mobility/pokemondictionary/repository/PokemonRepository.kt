@@ -3,19 +3,35 @@ package com.kakao.mobility.pokemondictionary.repository
 import com.kakao.mobility.pokemondictionary.data.LocationData
 import com.kakao.mobility.pokemondictionary.data.PokemonDetailData
 import com.kakao.mobility.pokemondictionary.data.PokemonLocationResponse
+import com.kakao.mobility.pokemondictionary.data.PokemonNameResponse
+import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 
-object PokemonRepository : PokemonDataSource{
+object PokemonRepository {
 
     private val remote = RemoteDataSource()
     private val local = LocalDataSource()
-    override fun getPokemonLocations(): Single<MutableMap<Int, ArrayList<LocationData>>> = remote.getPokemonLocations().subscribeOn(Schedulers.io())
-    override fun getPokemon(id: Int): Single<PokemonDetailData?> = remote.getPokemon(id).subscribeOn(Schedulers.io())
-//    override fun getPokemonLocations():Single<MutableMap<Int, ArrayList<LocationData>>> =  local.getPokemonLocations().filter { it == null }.let {
-//        remote.getPokemonLocations().subscribeOn(Schedulers.io()).flatMap { local.saveLocations(it) }
-//    }
 
-//    override fun getPokemon(id: Int): Single<PokemonDetailData?> = local.getPokemon(id).onErrorResumeNext { remote.getPokemon(id).flatMap { local.putPokemon(it) } }
+    fun getPokemon(id: Int): Flowable<PokemonDetailData?> =
+        Single.concat(
+            local.getPokemon(id).onErrorResumeNext { loadRemotePokemon(id) },
+            loadRemotePokemon(id)
+        )
 
+    private fun loadRemotePokemon(id: Int) =
+        remote.getPokemon(id).subscribeOn(Schedulers.io()).flatMap { local.putPokemon(it) }
+
+    private fun loadRemoteLocations() = remote.getPokemonLocations().subscribeOn(Schedulers.io())
+        .flatMap { local.saveLocations(it) }
+
+    fun getPokemonLocations(): Flowable<MutableMap<Int, ArrayList<LocationData>>> =
+        Single.concat(
+            local.getPokemonLocations().onErrorResumeNext { loadRemoteLocations() },
+            loadRemoteLocations()
+        )
+
+    fun getPokemonNames() = remote.getPokemonNames().subscribeOn(Schedulers.io())
 }

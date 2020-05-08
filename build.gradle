@@ -19,6 +19,7 @@ buildscript {
     ext{
         timberVersion = '4.7.1'
         retrofitVersion = '2.8.1'
+        recyclerViewVersion = '1.1.0'
     }
 }
 

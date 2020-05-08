@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.kakao.mobility.pokemondictionary.R
 import com.kakao.mobility.pokemondictionary.data.LocationData
 
+
 class MapsFragment : Fragment() {
 
     companion object {
@@ -46,10 +47,13 @@ class MapsFragment : Fragment() {
             getMapAsync {
                     googleMap ->  mMap = googleMap
 
+                val zoomLevel = 16.0f //This goes up to 21
+
                 locations?.forEach {
                     mMap.addMarker(MarkerOptions().position(LatLng(it.lat,it.lng)).title("Marker in Sydney"))
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(it.lat,it.lng)))
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.lat,it.lng),zoomLevel))
                 }
+
             }
         }
     }
