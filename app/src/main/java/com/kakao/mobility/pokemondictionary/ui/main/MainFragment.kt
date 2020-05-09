@@ -4,19 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.kakao.mobility.pokemondictionary.R
 import com.kakao.mobility.pokemondictionary.databinding.FragmentMainBinding
 import com.kakao.mobility.pokemondictionary.ui.detail.DetailFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
+import java.util.*
 
 class MainFragment : Fragment() {
 
@@ -48,18 +46,14 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 포켓몬 검색 (서버나 데이터가 많을시 debounce 등을 이용하여 다연속 검색을 줄이는 방법을 사용하면 좋을 것 같다..
-        RxTextView.textChanges(view.findViewById<EditText>(R.id.editTextSearch)).skipInitialValue().observeOn(AndroidSchedulers.mainThread()).subscribe {
-            viewModel.searchPokemon(it.toString().toUpperCase().hashCode())
-        }
-
-        RxView.clicks(view.findViewById<Button>(R.id.button)).subscribeBy {
-
+        RxTextView.textChanges(view.findViewById<EditText>(R.id.editTextSearch)).skipInitialValue()
+            .observeOn(AndroidSchedulers.mainThread()).subscribe {
+            viewModel.searchPokemon(it.toString().toUpperCase(Locale.getDefault()).trim().hashCode())
         }
 
         viewModel.action.observe(this, Observer {
             fragmentManager?.let { it1 ->
-                it?.let{
-                    pokemonData->
+                it?.let { pokemonData ->
                     it1.beginTransaction().addToBackStack(null).setCustomAnimations(
                         android.R.anim.slide_in_left,
                         android.R.anim.slide_out_right

@@ -26,7 +26,7 @@ class MainViewModel : ViewModel() {
 
             Timber.log(Log.ERROR, "onSuccess ")
 
-            // cache 가 없는 경우 데이터를 맵에 넣어준다.
+            // cache 가 없는 경우 데이터를 맵에 넣어준다. map 에 넣어 O(1)로 검색하여 빠른 검색을 하기위한 구현.
             map.takeIf { it.isEmpty() }.apply {
                 // 포켓몬 이름 api에서 받아온 데이터를 전체 한번 루프를 돌아 데이터를 하나씩 꺼낸다.
                 it.pokemons.forEach { pokemonName ->
