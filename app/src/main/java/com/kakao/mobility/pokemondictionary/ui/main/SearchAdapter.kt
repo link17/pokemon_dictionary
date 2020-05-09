@@ -5,10 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.kakao.mobility.pokemondictionary.data.PokemonData
 import com.kakao.mobility.pokemondictionary.data.PokemonNameResponse
 import com.kakao.mobility.pokemondictionary.databinding.ItemPokemonBinding
 
-class SearchAdapter(val mainViewModel: MainViewModel) : ListAdapter<PokemonNameResponse,PokemonViewHolder>(SearchListDiff){
+class SearchAdapter(val mainViewModel: MainViewModel) : ListAdapter<PokemonData,PokemonViewHolder>(SearchListDiff){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PokemonViewHolder(ItemPokemonBinding.inflate(
         LayoutInflater.from(parent.context),parent,false),mainViewModel)
 
@@ -27,18 +28,18 @@ class PokemonViewHolder(val binding:ItemPokemonBinding,val mainViewModel: MainVi
 
 }
 
-object SearchListDiff : DiffUtil.ItemCallback<PokemonNameResponse>() {
+object SearchListDiff : DiffUtil.ItemCallback<PokemonData>() {
 
     override fun areItemsTheSame(
-        oldItem: PokemonNameResponse,
-        newItem: PokemonNameResponse
+        oldItem: PokemonData,
+        newItem: PokemonData
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: PokemonNameResponse,
-        newItem: PokemonNameResponse
+        oldItem: PokemonData,
+        newItem: PokemonData
     ): Boolean {
         return oldItem.id == newItem.id
     }

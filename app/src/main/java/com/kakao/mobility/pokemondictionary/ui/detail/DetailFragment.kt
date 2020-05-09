@@ -15,9 +15,17 @@ import com.kakao.mobility.pokemondictionary.ui.map.MapsFragment
 class DetailFragment : Fragment() {
 
     companion object {
-        fun newInstance() = DetailFragment()
+        private const val ARG_POKEMON = "ARG_POKEMON"
+
+        fun newInstance(it: PokemonData) =  DetailFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(ARG_POKEMON,it)
+            }
+        }
     }
 
+    private val pokemonData: PokemonData?
+        get() = arguments?.getParcelable<PokemonData>(ARG_POKEMON)
 
     private val viewModel: DetailViewModel by lazy {
         ViewModelProviders.of(this).get(DetailViewModel::class.java).apply {
@@ -35,7 +43,7 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getPokemonZip(PokemonData(1, "피카츄", "pikachu"))
+        viewModel.getPokemonZip(pokemonData)
         viewModel.action.observe(this, Observer {
             fragmentManager?.beginTransaction()?.addToBackStack(null)?.setCustomAnimations(
                 android.R.anim.slide_in_left,

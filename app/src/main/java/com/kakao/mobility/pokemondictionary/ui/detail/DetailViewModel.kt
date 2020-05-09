@@ -32,11 +32,11 @@ class DetailViewModel : ViewModel() {
      * 스트림을 한번에 두 서버데이터를 zip 을 이용하여 동시에 view에 보내주도록 하는 함수.
      */
 
-    fun getPokemonZip(pokemonData: PokemonData) {
+    fun getPokemonZip(pokemonData: PokemonData?) = pokemonData?.let{
         PokemonRepository.run {
 
             // 포켓몬 api 서버 데이터 받아옴.
-            getPokemon(pokemonData.id).observeOn(AndroidSchedulers.mainThread()).doOnNext {
+            getPokemon(it.id).observeOn(AndroidSchedulers.mainThread()).doOnNext {
                 // 로컬(캐쉬) -> 서버 데이터 순으로 데이터가 내려와 view 에 보내줌.
                 it?.let {
                     it.locationData = pokemonDetailData.value?.locationData

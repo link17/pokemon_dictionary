@@ -1,13 +1,13 @@
 package com.kakao.mobility.pokemondictionary.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.view.RxView
@@ -17,25 +17,11 @@ import com.kakao.mobility.pokemondictionary.databinding.FragmentMainBinding
 import com.kakao.mobility.pokemondictionary.ui.detail.DetailFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
-import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 class MainFragment : Fragment() {
 
     companion object {
         fun newInstance() = MainFragment()
-        /**
-         * BinarySearch
-         *
-         * http://exercism.io/exercises/kotlin/binary-search/readme
-         * http://exercism.io/tracks/kotlin/exercises/binary-search
-         * http://exercism.io/submissions/b2e9fda2bab54901acb398b3c778185e
-         *
-         * @author nrojiani
-         * @date 9/22/17
-         */
-
-        const val NOT_FOUND: Int = -1
     }
 
     private val viewModel: MainViewModel by lazy {
@@ -61,25 +47,32 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        RxTextView.textChanges(view.findViewById<EditText>(R.id.editTextSearch)).skipInitialValue().debounce(300L,TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe {
+        // 포켓몬 검색 (서버나 데이터가 많을시 debounce 등을 이용하여 다연속 검색을 줄이는 방법을 사용하면 좋을 것 같다..
+        RxTextView.textChanges(view.findViewById<EditText>(R.id.editTextSearch)).skipInitialValue().observeOn(AndroidSchedulers.mainThread()).subscribe {
             viewModel.searchPokemon(it.toString().toUpperCase().hashCode())
         }
 
         RxView.clicks(view.findViewById<Button>(R.id.button)).subscribeBy {
-            fragmentManager?.let { it1 ->
-                //            DetailFragment.newInstance().show(
-//                it1,DetailFragment.javaClass.name)
-                it1.beginTransaction().addToBackStack(null).setCustomAnimations(
-                    android.R.anim.slide_in_left,
-                    android.R.anim.slide_out_right
-                )
-                    .add(
-                        R.id.container,
-                        DetailFragment.newInstance(),
-                        DetailFragment.toString()
-                    ).commit()
-            }
+
         }
+
+        viewModel.action.observe(this, Observer {
+            fragmentManager?.let { it1 ->
+                it?.let{
+                    pokemonData->
+                    it1.beginTransaction().addToBackStack(null).setCustomAnimations(
+                        android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right
+                    )
+                        .add(
+                            R.id.container,
+                            DetailFragment.newInstance(pokemonData),
+                            DetailFragment.toString()
+                        ).commit()
+                }
+
+            }
+        })
 
 //        RxView.clicks(view.findViewById<Button>(R.id.button))
 //            .throttleFirst(3000L, TimeUnit.MILLISECONDS).subscribeBy(onComplete = {

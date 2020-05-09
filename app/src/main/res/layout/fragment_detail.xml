@@ -32,7 +32,7 @@
             android:id="@+id/buttonMap"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:enabled="@{viewModel.pokemonDetailData.locationData != null}"
             android:onClick="@{(view) -> viewModel.onClickMap()}"
             android:text="@string/button_map"
@@ -89,8 +89,8 @@
             android:id="@+id/textViewCm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:text=" cm"
+            android:layout_marginStart="8dp"
+            android:text="@string/cm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewHeight"
 
@@ -116,8 +116,8 @@
             android:id="@+id/textViewGram"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:text=" g"
+            android:layout_marginStart="8dp"
+            android:text="@string/g"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewWeight"
 
